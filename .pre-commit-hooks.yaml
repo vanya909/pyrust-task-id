@@ -1,7 +1,7 @@
-- id: rust-task-id
+- id: pyrust-task-id
   name: Rust task id
   description: Add task id from the branch name to the commit message.
-  entry: rust_task_id
+  entry: pyrust_task_id
   language: system
   types: [python]
   pass_filenames: false

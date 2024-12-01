@@ -7,10 +7,10 @@ repos:
     -   id: clippy
 -   repo: local
     hooks:
-    -   id: rust_task_id
+    -   id: pyrust_task_id
         name: Rust task id
         description: Add task id from the branch name to the commit message.
-        entry: rust_task_id
+        entry: pyrust_task_id
         language: system
         stages: [commit-msg]
         args:

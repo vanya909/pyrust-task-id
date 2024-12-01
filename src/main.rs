@@ -1,3 +1,3 @@
 fn main() {
-    rust_task_id::task_id_run();
+    pyrust_task_id::run();
 }

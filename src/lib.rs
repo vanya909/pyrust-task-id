@@ -134,8 +134,8 @@ fn format_commit_message(
     }
 }
 
-/// Run `rust_task_id` hook
-pub fn task_id_run() {
+/// Run `pyrust_task_id`
+pub fn run() {
     let args = Cli::parse();
 
     let template = args.template.replace("\\n", "\n");
