@@ -13,7 +13,7 @@ to provide the task `TASK-111` into commit message.<br>Then you can just use thi
 First, just add hook into `.pre-commit-config.yaml`:
 ```yaml
 -   repo: https://github.com/vanya909/pyrust-task-id-pre-commit
-    rev: 0.1.0
+    rev: 0.1.2
     hooks:
     -   id: pyrust-task-id
         stages: [commit-msg]
