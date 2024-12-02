@@ -11,5 +11,32 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
+authors = [
+  {name = "Ivan Studinsky", email = "vanya909x75@gmail.com"},
+]
+description = "Tool to provide task id, retrieved from branch name, right into commit message."
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = [
+    "rust",
+    "python",
+    "ticket",
+    "task",
+    "branch",
+    "commit",
+    "auto",
+    "pre-commit",
+    "retrieve",
+    "pull",
+    "parse",
+    "jira",
+    "hook",
+]
+
+[project.urls]
+Homepage = "https://github.com/vanya909/pyrust-task-id"
+Issues = "https://github.com/vanya909/pyrust-task-id/issues"
+"Pre-commit hook" = "https://github.com/vanya909/pyrust-task-id-pre-commit"
+
 [tool.maturin]
 bindings = "bin"
