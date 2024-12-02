@@ -1,9 +1,13 @@
 [package]
 name = "pyrust_task_id"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
 clap = { version = "4.5.21", features = ["derive"] }
 regex = "1.11.1"
 strfmt = "0.2.4"
+log = "0.4.22"
+
+[dev-dependencies]
+tempfile = "3.14.0"
