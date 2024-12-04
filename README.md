@@ -41,5 +41,4 @@ Can't wait to see this feature in prod.
 Task ID: TASK-111
 ```
 
-This project uses [standalone repo](https://github.com/vanya909/pyrust-task-id-pre-commit) for pre-commit hook because it requires pre-build python wheels from PyPI<br>
-PyPI Link: https://pypi.org/project/pyrust-task-id/
+This project uses [standalone repo](https://github.com/vanya909/pyrust-task-id-pre-commit) for pre-commit hook because it requires pre-build python wheels from PyPI
