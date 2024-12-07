@@ -165,3 +165,10 @@ jobs:
         with:
           command: upload
           args: --non-interactive --skip-existing wheels-*/*
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: vanya909/pyrust-task-id-pre-commit
+          event-type: pypi_release
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
