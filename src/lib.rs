@@ -43,15 +43,64 @@ fn get_current_branch() -> String {
     String::from(output_text.trim())
 }
 
+/// Return comment string which was set in git config
+fn get_git_comment_string() -> String {
+    let default_comment_char = String::from("#");
+    let git_config_options = ["core.commentString", "core.commentChar"];
+
+    let mut comment_string: String = default_comment_char;
+    for option in git_config_options {
+        let mut command = Command::new("git");
+        command.args(["config", "--get", option]);
+
+        let command_result = command
+            .output()
+            .expect("git must be installed in order to use this hook.");
+        let command_output = String::from_utf8(command_result.stdout)
+            .expect("Got non-utf8 text.");
+
+        if !command_output.is_empty() {
+            comment_string = command_output;
+            break;
+        }
+    }
+
+    comment_string
+}
+
+/// Return commit message without comments and the content bellow cutline
+///
+/// * `commit_message` - the message that will be used to get subject and body
+fn get_commit_message_without_comments(commit_message: &str) -> String {
+    let regex = Regex::new("(^|\n)-+>8-+($|\n)").unwrap();
+
+    let mut commit_message_without_cutline_section: &str = commit_message;
+    if let Some(regex_match) = regex.find(commit_message) {
+        commit_message_without_cutline_section =
+            &commit_message[..regex_match.start()];
+    }
+
+    let mut result_message =
+        commit_message_without_cutline_section.to_string();
+
+    let comment_string = get_git_comment_string();
+    let regex =
+        Regex::new(&format!(r"(^|\n){comment_string}.*($|\n)")).unwrap();
+
+    let matches = regex.find_iter(commit_message_without_cutline_section);
+    for regex_match in matches {
+        let comment_line = regex_match.as_str();
+        result_message = result_message.replace(comment_line, "\n");
+    }
+
+    result_message.trim().to_string()
+}
+
 /// Return commit message's subject and body retrieved from provided message
 ///
 /// * `commit_message` - the message that will be used to get subject and body
 fn get_subject_and_body(commit_message: &str) -> (String, String) {
-    // Remove comment section if presented (The line that starts from `#` is the
-    // comment, the first such line is considered to be the start of comment section)
-    let commit_message_last_index =
-        commit_message.find("\n#").unwrap_or(commit_message.len());
-    let commit_message = &commit_message[0..commit_message_last_index];
+    let commit_message = get_commit_message_without_comments(commit_message);
 
     if let Some((subject, body)) = commit_message.split_once("\n\n") {
         (subject.to_string(), body.to_string())
@@ -373,5 +422,50 @@ mod tests {
         let commit_message = read_to_string(path).unwrap_or_default();
 
         assert_eq!(commit_message, expected);
+    }
+
+    #[test]
+    fn test_removing_of_comment_section_in_beginning() {
+        let commit_message = "# Comment\nSubject\nBody";
+        let expected = "Subject\nBody";
+
+        let commit_message_without_comments =
+            get_commit_message_without_comments(commit_message);
+
+        assert_eq!(commit_message_without_comments, expected)
+    }
+
+    #[test]
+    fn test_removing_of_comment_section_in_end() {
+        let commit_message = "Subject\nBody\n# Comment";
+        let expected = "Subject\nBody";
+
+        let commit_message_without_comments =
+            get_commit_message_without_comments(commit_message);
+
+        assert_eq!(commit_message_without_comments, expected)
+    }
+
+    #[test]
+    fn test_removing_of_comment_section_in_middle() {
+        let commit_message = "Subject\n# Comment\nBody\n";
+        let expected = "Subject\nBody";
+
+        let commit_message_without_comments =
+            get_commit_message_without_comments(commit_message);
+
+        assert_eq!(commit_message_without_comments, expected)
+    }
+
+    #[test]
+    fn test_removing_of_content_bellow_cutline() {
+        let commit_message =
+            "Subject\nBody\n--->8---\ncomment bellow cutline\n--->8---\nsecond comment bellow cutline";
+        let expected = "Subject\nBody";
+
+        let commit_message_without_comments =
+            get_commit_message_without_comments(commit_message);
+
+        assert_eq!(commit_message_without_comments, expected)
     }
 }
